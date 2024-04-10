@@ -12,7 +12,7 @@ public class Search {
     
     public static int binarySearch(String term, String[] list) {
         int low = 0;
-        int high = list.length - 1; // Adjusted to avoid ArrayIndexOutOfBoundsException
+        int high = list.length - 1; 
         int mid;
 
         while (low <= high) {
@@ -20,7 +20,7 @@ public class Search {
 
             if (list[mid].equals(term)) {
                 return mid;
-            } else if (list[mid].compareTo(term) > 0) { // Using compareTo for string comparison
+            } else if (list[mid].compareTo(term) > 0) { 
                 high = mid - 1;
             } else {
                 low = mid + 1;

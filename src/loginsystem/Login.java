@@ -244,7 +244,7 @@ public class Login extends javax.swing.JFrame {
     password = jTextField2.getText();
     
     }
-    
+        
     else if (on ==false){
          password = jPasswordField1.getText();
     }

@@ -10,6 +10,7 @@ import javax. swing. *;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
@@ -32,13 +33,13 @@ public class LoginSystem {
     private int fileSize = readSize();
     private int namesSize = readSizeofCode(); 
     private String[] names = new String [fileSize];
-    private String []codeName = new String [namesSize]; 
+    private String [] nName = new String [fileSize]; 
     private String[] user = new String [fileSize];
     private String[] pass  = new String [fileSize];
     private String[] emails  = new String [fileSize];
     private String [] age = new String [fileSize]; 
     
-    private String [] possibleCodeNames = new String[namesSize]; 
+    private String []codeName = new String [namesSize];
 
     //Declare booleans to keep track of the data in the file
     private boolean doubleUser;
@@ -94,7 +95,7 @@ public class LoginSystem {
                 JOptionPane.showMessageDialog(null, "Welcome");
                 
                 //Set the persoanl info of the user
-               person = new User(username, codeName[i], pass[i], names[i], emails[i], age[i]); 
+               person = new User(username, nName[i], pass[i], names[i], emails[i], age[i]); 
                 return; 
                 // If incorrect password, no need to check further
             } else {
@@ -132,13 +133,22 @@ public class LoginSystem {
 }
 }
     
+    
+    /**
+     * Checks the validity of a provided code name.
+     *
+     * @param codeName The code name to be checked.
+     */
+    
         public void codeNameCheck(String codeName) {
       
         //Load the codeNames
      loadCodeNames(); 
-            
+     
+            //User binary search to find if the passed in codeName is valid
             int i = search.binarySearch(codeName, this.codeName); 
     
+            //If the method returrs -1, the codeName is not valid
             if (i == -1) {
                //Output that the username is invalid
                 JOptionPane.showMessageDialog(null, "This code name is invalid or unavailable");
@@ -147,7 +157,9 @@ public class LoginSystem {
                 invalidCodeName = true; 
 
  }
+            //If the method returns anything else
             else{
+            //Refer to the codeNameSet method and pass in the codeName as an arguement
             codeNameSet(codeName);
             //Update the boolean
             invalidCodeName = false; 
@@ -155,28 +167,37 @@ public class LoginSystem {
 }
 
         
+        //Create a method to delete the used code name from the file
         private void codeNameSet(String codeName){
             
+            //Run a for loop that goes through the entire array
             for (int i = 0; i < namesSize; i++){
+                //If the word at index matched the parameter, set the word at idex to be null
                 if (this.codeName[i].equals(codeName)){
                     this.codeName[i] = null; 
                     
                 }
             }
             
+            //Refer to the writeCodeName method
             writeCodeName(); 
         }
         
  
+        //Create a method to re-write the file and delete the used code name
         private void writeCodeName (){
         try {
             //Open a print writer
-            FileWriter p = new FileWriter(namesFile); 
+            PrintWriter p = new PrintWriter(namesFile); 
             
-            for(int i = 0; i > this.codeName.length; i++){
+            //Run a loop that goes through the entire codeName array
+            for(int i = 0; i < this.codeName.length; i++){
         
-                p.write(this.codeName[i]); 
-                System.out.println(codeName[i]);
+                //Make sure to not print the used code name
+                if (codeName[i] != null){
+                    //Print the rest of the names
+                p.println(this.codeName[i]); 
+                }
             
         }
         }catch (IOException ex) {
@@ -184,6 +205,8 @@ public class LoginSystem {
         }
         }
  
+        
+        
     //Create a method to check if the password is strong enoguh 
 
      /**
@@ -332,7 +355,7 @@ public void load() {
             
             //Add each item to its dedicated array 
             names[i] = scanner.next();
-            codeName [i] = scanner.next(); 
+            nName [i] = scanner.next(); 
             user[i] = scanner.next();
             pass[i] = scanner.next();
             emails[i] = scanner.next();
@@ -621,19 +644,4 @@ public String getUsername(){
         public boolean getPassCheck(){
             return passCheck; 
         }
-
-        
-      /**
-     * Retrieves the array named user.
-     * @return The user[].
-     */
-        public String[] getPossibleCodeNames(){
-        return possibleCodeNames; 
-}
-        
-        public void setCodeName(String codeName, int i){
-            
-            this.codeName[i] = codeName; 
-        }
-    
 }
